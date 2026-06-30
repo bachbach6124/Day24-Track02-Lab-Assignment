@@ -2,22 +2,24 @@
 p, admin, patient_data, read
 p, admin, patient_data, write
 p, admin, patient_data, delete
+p, admin, training_data, read
+p, admin, aggregated_metrics, read
 p, admin, model_artifacts, read
 p, admin, model_artifacts, write
 
 p, ml_engineer, training_data, read
+p, ml_engineer, aggregated_metrics, read
 p, ml_engineer, model_artifacts, read
 p, ml_engineer, model_artifacts, write
-# TODO: ml_engineer KHÔNG được delete production data
-# TODO: ml_engineer KHÔNG được đọc raw PII
+# No patient_data read/delete policy: ml_engineer cannot read raw PII or delete production data.
 
 p, data_analyst, aggregated_metrics, read
 p, data_analyst, reports, write
-# TODO: data_analyst KHÔNG được đọc raw PII
+# No patient_data policy: data_analyst cannot read raw PII.
 
 p, intern, sandbox_data, read
 p, intern, sandbox_data, write
-# TODO: intern KHÔNG được access production
+# Sandbox-only policies: intern cannot access production resources.
 
 # Role inheritance
 g, alice, admin

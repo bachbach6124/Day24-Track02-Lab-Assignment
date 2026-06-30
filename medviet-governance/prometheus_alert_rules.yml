@@ -1,0 +1,32 @@
+groups:
+  - name: medviet-security
+    rules:
+      - alert: HighAuthorizationFailureRate
+        expr: increase(medviet_api_authorization_denied_total[5m]) > 10
+        for: 2m
+        labels:
+          severity: high
+          owner: security
+        annotations:
+          summary: High authorization failure rate
+          description: More than 10 denied authorization decisions occurred in 5 minutes.
+
+      - alert: RawPIIAccessSpike
+        expr: increase(medviet_api_raw_patient_reads_total[5m]) > 5
+        for: 2m
+        labels:
+          severity: critical
+          owner: platform
+        annotations:
+          summary: Raw PII access spike
+          description: Raw patient-data reads exceeded the approved threshold.
+
+      - alert: RestrictedExportAttempt
+        expr: increase(medviet_opa_restricted_export_denied_total[5m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+          owner: security
+        annotations:
+          summary: Restricted data export blocked
+          description: OPA denied an attempt to export restricted data outside Vietnam.

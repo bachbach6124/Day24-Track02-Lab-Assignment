@@ -1,0 +1,19 @@
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Local secrets/keys
+.vault_key
+.test_vault_key
+
+# Lab raw PII data
+medviet-governance/data/raw/*.csv
+
+# Tooling caches
+.mypy_cache/
+.ruff_cache/

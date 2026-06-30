@@ -15,7 +15,7 @@ class MedVietAnonymizer:
 
     def anonymize_text(self, text: str, strategy: str = "replace") -> str:
         """
-        TODO: Anonymize text với strategy được chọn.
+        Anonymize text với strategy được chọn.
 
         Strategies:
         - "mask"    : Nguyen Van A → N****** V** A
@@ -23,11 +23,11 @@ class MedVietAnonymizer:
         - "hash"    : SHA-256 one-way hash
         - "generalize": chỉ dùng cho tuổi/năm sinh
         """
+        text = str(text)
         results = detect_pii(text, self.analyzer)
         if not results:
             return text
 
-        # TODO: implement operators dict dựa trên strategy
         operators = {}
 
         if strategy == "replace":
@@ -35,18 +35,25 @@ class MedVietAnonymizer:
                 "PERSON": OperatorConfig("replace", 
                           {"new_value": fake.name()}),
                 "EMAIL_ADDRESS": OperatorConfig("replace", 
-                                 {"new_value": ___}),   # TODO: fake email
+                                 {"new_value": fake.email()}),
                 "VN_CCCD": OperatorConfig("replace", 
-                           {"new_value": ___}),          # TODO: fake CCCD
+                           {"new_value": fake.numerify(text="############")}),
                 "VN_PHONE": OperatorConfig("replace", 
-                            {"new_value": ___}),         # TODO: fake phone
+                            {"new_value": "0" + fake.random_element(["3", "5", "7", "8", "9"]) + fake.numerify(text="########")}),
             }
         elif strategy == "mask":
-            # TODO: implement masking
-            pass
+            operators = {
+                "DEFAULT": OperatorConfig(
+                    "mask",
+                    {"masking_char": "*", "chars_to_mask": 100, "from_end": False},
+                )
+            }
         elif strategy == "hash":
-            # TODO: implement hashing dùng sha256
-            pass
+            operators = {
+                "DEFAULT": OperatorConfig("hash", {"hash_type": "sha256"})
+            }
+        else:
+            raise ValueError(f"Unsupported anonymization strategy: {strategy}")
 
         anonymized = self.anonymizer.anonymize(
             text=text,
@@ -57,7 +64,7 @@ class MedVietAnonymizer:
 
     def anonymize_dataframe(self, df: pd.DataFrame) -> pd.DataFrame:
         """
-        TODO: Anonymize toàn bộ DataFrame.
+        Anonymize toàn bộ DataFrame.
         - Cột text (ho_ten, dia_chi, email): dùng anonymize_text()
         - Cột cccd, so_dien_thoai: replace trực tiếp bằng fake data
         - Cột benh, ket_qua_xet_nghiem: GIỮ NGUYÊN (cần cho model training)
@@ -65,8 +72,23 @@ class MedVietAnonymizer:
         """
         df_anon = df.copy()
 
-        # TODO: Xử lý từng cột PII
-        # Gợi ý: dùng df.apply() hoặc list comprehension
+        if "ho_ten" in df_anon:
+            df_anon["ho_ten"] = df_anon["ho_ten"].apply(self.anonymize_text)
+        if "email" in df_anon:
+            df_anon["email"] = df_anon["email"].apply(self.anonymize_text)
+        if "dia_chi" in df_anon:
+            df_anon["dia_chi"] = df_anon["dia_chi"].apply(self.anonymize_text)
+        if "bac_si_phu_trach" in df_anon:
+            df_anon["bac_si_phu_trach"] = df_anon["bac_si_phu_trach"].apply(
+                self.anonymize_text
+            )
+        if "cccd" in df_anon:
+            df_anon["cccd"] = [fake.numerify(text="############") for _ in df_anon.index]
+        if "so_dien_thoai" in df_anon:
+            df_anon["so_dien_thoai"] = [
+                "0" + fake.random_element(["3", "5", "7", "8", "9"]) + fake.numerify(text="########")
+                for _ in df_anon.index
+            ]
 
         return df_anon
 
@@ -74,7 +96,7 @@ class MedVietAnonymizer:
                                   original_df: pd.DataFrame,
                                   pii_columns: list) -> float:
         """
-        TODO: Tính % PII được detect thành công.
+        Tính % PII được detect thành công.
         Mục tiêu: > 95%
 
         Logic: với mỗi ô trong pii_columns,

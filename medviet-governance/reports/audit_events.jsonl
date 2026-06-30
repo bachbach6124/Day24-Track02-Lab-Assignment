@@ -1,0 +1,7 @@
+{"user": "bob", "role": "ml_engineer", "action": "read", "resource": "patient_data", "decision": "deny", "status_code": 403, "timestamp": "2026-06-30T04:44:20.277780+00:00"}
+{"user": "alice", "role": "admin", "action": "read", "resource": "patient_data", "decision": "allow", "status_code": 200, "timestamp": "2026-06-30T04:44:20.279192+00:00"}
+{"user": "bob", "role": "ml_engineer", "action": "delete", "resource": "patient_data", "decision": "deny", "status_code": 403, "timestamp": "2026-06-30T04:44:20.287006+00:00"}
+{"user": "carol", "role": "data_analyst", "action": "read", "resource": "aggregated_metrics", "decision": "allow", "status_code": 200, "timestamp": "2026-06-30T04:44:20.288136+00:00"}
+{"user": "bob", "role": "ml_engineer", "action": "read", "resource": "training_data", "decision": "allow", "status_code": 200, "timestamp": "2026-06-30T04:44:20.292943+00:00"}
+{"user": "dave", "role": "intern", "action": "read", "resource": "aggregated_metrics", "decision": "deny", "status_code": 403, "timestamp": "2026-06-30T04:44:20.327333+00:00"}
+{"user": "anonymous", "role": "anonymous", "action": "authenticate", "resource": "api", "decision": "deny", "status_code": 401, "reason": "missing_token", "timestamp": "2026-06-30T04:44:20.328218+00:00"}

@@ -1,0 +1,63 @@
+OPA version:
+Version: 1.18.1
+Build Commit: 
+Build Timestamp: 
+Build Hostname: 
+Go Version: go1.26.4
+Platform: darwin/arm64
+Rego Version: v1
+WebAssembly: unavailable
+
+Test ml_engineer delete production_data should be false:
+{
+  "result": [
+    {
+      "expressions": [
+        {
+          "value": false,
+          "text": "data.medviet.data_access.allow",
+          "location": {
+            "row": 1,
+            "col": 1
+          }
+        }
+      ]
+    }
+  ]
+}
+
+Test admin raw read should be true:
+{
+  "result": [
+    {
+      "expressions": [
+        {
+          "value": true,
+          "text": "data.medviet.data_access.allow",
+          "location": {
+            "row": 1,
+            "col": 1
+          }
+        }
+      ]
+    }
+  ]
+}
+
+Test restricted export outside VN deny should be true:
+{
+  "result": [
+    {
+      "expressions": [
+        {
+          "value": true,
+          "text": "data.medviet.data_access.deny",
+          "location": {
+            "row": 1,
+            "col": 1
+          }
+        }
+      ]
+    }
+  ]
+}
